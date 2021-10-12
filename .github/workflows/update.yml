@@ -20,7 +20,6 @@ jobs:
         python-version: '3.8'
     - name: Load cache
       uses: actions/cache@v2
-      id: cache
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
@@ -29,10 +28,13 @@ jobs:
     - name: Install dependencies
       run: pip install -r requirements.txt
     - name: Create/update national stats JSON
+      id: update_national
       run: python scrape_home.py
     - name: Create/update local stats JSON
+      id: update_local
       run: python scrape_cases.py
     - name: Push changes
+      if: steps.update_national.outputs.files_changed || steps.update_local.outputs.files_changed
       run: |
         git config user.name github-actions
         git config user.email github-actions@github.com
