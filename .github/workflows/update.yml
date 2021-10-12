@@ -23,7 +23,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-
     - name: Install dependencies
-      if: steps.cache.outputs.cache-hit != 'true'
       run: pip install -r requirements.txt
     - name: Create/update national stats JSON
       run: python scrape_home.py
